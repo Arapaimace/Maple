@@ -23,9 +23,15 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
     // sprites/object creating
     
     Map background = new Map();
-
+    double maxLong = 180;
+    double minLong = -180;
+    double maxLat = 85.05112878;
+    double minLat = -85.05112878;
     int width = 2058;
     int height = 1036;
+    
+    double xScale = width/(maxLong - minLong);
+    double yScale = height/(maxLat - minLat);
     
     //sets background
     private ImageIcon backgroundImage = new ImageIcon("Map.jpg");
@@ -58,6 +64,16 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
         super.paintComponent(g);
         // Call the paint method of the Map object to draw the background
         background.paint(g);
+        g.setColor(Color.red);
+        g.fillOval((int)((1.601554 - minLong)*xScale-75), (int)(-(42.546245 + minLat)*yScale), 10, 10); //Andora
+        g.fillOval((int)((25.48583 - minLong)*xScale-75), (int)(-(42.733883 + minLat)*yScale), 10, 10); //Bulgaria
+        g.fillOval((int)((-95.712891 - minLong)*xScale-75), (int)(-(37.09024 + minLat)*yScale), 10, 10); //United States
+        g.fillOval((int)((-3.74922 - minLong)*xScale-75), (int)(-(40.463667 + minLat)*yScale), 10, 10); //Spain
+        g.fillOval((int)((-3.435973	 - minLong)*xScale-75), (int)(-(55.378051 + minLat)*yScale), 10, 10); //United Kingdom
+        g.fillOval((int)((28.233608 - minLong)*xScale-75), (int)(-(-29.609988	 + minLat)*yScale), 10, 10); //Lesotho
+        g.fillOval((int)((	-51.92528 - minLong)*xScale-75), (int)(-(-14.235004	 + minLat)*yScale), 10, 10); //Brazil
+        g.fillOval((int)((28.233608 + 180) * (width / 360)), ((int)((-29.609988 * -1) + 90) * (height / 180)), 10, 10);
+
     }
 
     @Override
