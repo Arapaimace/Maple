@@ -65,6 +65,12 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
         // Call the paint method of the Map object to draw the background
         background.paint(g);
         g.setColor(Color.red);
+        
+        double[] paraguay = convert(-32.815428, -56.094636);
+        System.out.println(paraguay[0]);
+        System.out.println(paraguay[1]);
+
+        g.fillOval((int)paraguay[0], (int)paraguay[1], 10, 10);
         g.fillOval((int)((1.601554 - minLong)*xScale-75), (int)(-(42.546245 + minLat)*yScale), 10, 10); //Andora
         g.fillOval((int)((25.48583 - minLong)*xScale-75), (int)(-(42.733883 + minLat)*yScale), 10, 10); //Bulgaria
         g.fillOval((int)((-95.712891 - minLong)*xScale-75), (int)(-(37.09024 + minLat)*yScale), 10, 10); //United States
@@ -74,6 +80,15 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
         g.fillOval((int)((	-51.92528 - minLong)*xScale-75), (int)(-(-14.235004	 + minLat)*yScale), 10, 10); //Brazil
         g.fillOval((int)((28.233608 + 180) * (width / 360)), ((int)((-29.609988 * -1) + 90) * (height / 180)), 10, 10);
 
+    }
+    
+    public double[] convert(double lon, double lat){
+        double x = ((lon + 180.0) * (width / 360.0));
+        double y = (((lat * -1.0) + 90.0) * (height / 180.0));
+        
+        
+        double[] res = {x,y};
+        return res;
     }
 
     @Override
