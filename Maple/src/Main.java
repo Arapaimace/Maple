@@ -27,8 +27,8 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
     double minLong = -180;
     double maxLat = 85.05112878;
     double minLat = -85.05112878;
-    int width = 2058;
-    int height = 1036;
+    int width = 1280;
+    int height = 641;
     
     double xScale = width/(maxLong - minLong);
     double yScale = height/(maxLat - minLat);
@@ -61,15 +61,14 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        
+    	super.paintComponent(g);
         // Call the paint method of the Map object to draw the background
         background.paint(g);
         g.setColor(Color.red);
         
         double[] paraguay = convert(-32.815428, -56.094636);
-        System.out.println(paraguay[0]);
-        System.out.println(paraguay[1]);
-
+        
         g.fillOval((int)paraguay[0], (int)paraguay[1], 10, 10);
         g.fillOval((int)((1.601554 - minLong)*xScale-75), (int)(-(42.546245 + minLat)*yScale), 10, 10); //Andora
         g.fillOval((int)((25.48583 - minLong)*xScale-75), (int)(-(42.733883 + minLat)*yScale), 10, 10); //Bulgaria
