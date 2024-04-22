@@ -57,6 +57,7 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.add(this);
         f.setVisible(true);
+        System.out.println();
     }
 
     @Override

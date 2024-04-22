@@ -15,8 +15,11 @@ public class Country {
 			HashMap country = new HashMap<String, Coordinate>();
 			
 			 while (scanner.hasNextLine()) {
-	                String line = scanner.nextLine();
-	                String[] data = line.split(",");
+	    			String[] data = scanner.nextLine().split(",");
+	                for(int i = 2; i < data.length; i++) {
+	                	System.out.println(data[i]);
+	                	i+=2;
+	                }
 	                double latitude = Double.parseDouble(data[0]);
 	                double longitude = Double.parseDouble(data[1]);
 	                String c = data[2];
