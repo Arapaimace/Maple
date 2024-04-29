@@ -29,16 +29,14 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 public class Main extends JPanel implements ActionListener, MouseListener, KeyListener {
-    
-    // sprites/object creating
-    
+        
     Map background = new Map();
     double maxLong = 180;
     double minLong = -180;
     double maxLat = 85.05112878;
     double minLat = -85.05112878;
     int width = 1280;
-    int height = 641;
+    int height = 710;
     JButton button;
     JTextField textField;
     JLabel map;
@@ -49,7 +47,8 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
     //sets background
     private ImageIcon backgroundImage = new ImageIcon("Map.jpg");
     private static Coordinate inputted;
-    private static String in = "Russian Federation";
+    private String entered;
+    private static HashMap country;
     public static void main(String[] arg) {
         new Main(); 
         readInput();
@@ -63,25 +62,15 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
                 scanner.nextLine(); // Skip the first line
             }
 			
-			HashMap country = new HashMap<String, Coordinate>();
+			country = new HashMap<String, Coordinate>();
 			
 			 while (scanner.hasNextLine()) {
 	    			String[] data = scanner.nextLine().split(",");
-	                for(int i = 2; i < data.length; i++) {
-	                	System.out.println(data[i]);
-	                	i+=2;
-	                }
 	                double latitude = Double.parseDouble(data[0]);
 	                double longitude = Double.parseDouble(data[1]);
 	                String c = data[2];
 	                country.put(c, new Coordinate(latitude, longitude));
 	            }
-//			 while(true) {
-//				Scanner input = new Scanner(System.in);
-//				System.out.println("input country");
-//                in = input.nextLine();
-//                inputted = (Coordinate)(country.get(in));
-//			}
 		}
 		catch (Exception e){
 			System.out.println(e);
@@ -134,8 +123,8 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
         // Call the paint method of the Map object to draw the background
         background.paint(g);
         g.setColor(Color.red);
-//        g.drawOval((int)inputted.getLatitude(), (int)inputted.getLongitude(), 10, 10);
-        double[] paraguay = convert(-32.815428, -56.094636);
+        Coordinate curr = (Coordinate) country.get(entered);
+
     }
     
     public double[] convert(double lon, double lat){
@@ -176,7 +165,7 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == button) {
-        	System.out.println(textField.getText());
+        	entered = textField.getText();
         }
     }
 
