@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.awt.Image;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 public class Main extends JPanel implements ActionListener, MouseListener, KeyListener {
@@ -89,24 +91,16 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
     //frame constructor
     public Main() {
         JFrame world = new JFrame("Map");
-        JFrame text = new JFrame("Text");
+        JPanel panel = new JPanel();
         textField = new JTextField(20);
+        textField.setHorizontalAlignment(SwingConstants.CENTER);
+        textField.setBounds(0, 0, (int) (width), 50);
+        
+
         button = new JButton("Enter");
         button.addActionListener(this);
-        text.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        text.setLayout(new FlowLayout());
-		text.setResizable(false);
-		text.pack();
-        // Add the JTextField to the JFrame
-        
-        text.add(textField);
-
-        // Set the size of the JFrame
-        text.setSize(300, 100);
 
         // Make the JFrame visible
-        text.add(button);
-        text.setVisible(true);
         world.setLayout(new BorderLayout());
         world.setSize(new Dimension(width, height));
         world.setResizable(false);
@@ -114,15 +108,21 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
         world.addKeyListener(this);
         
         String src = new File("").getAbsolutePath() + "/src/";
-        map = new JLabel(new ImageIcon(src + "Map.jpg"));
+        map = new JLabel("");
+        Image img = new ImageIcon(this.getClass().getResource("Map.jpg")).getImage();
+        map.setIcon(new ImageIcon(img));
         
         setCursor(Toolkit.getDefaultToolkit().createCustomCursor(backgroundImage.getImage(), new Point(0, 0),
                 "custom cursor"));
         
+        panel.add(textField);
+        panel.add(button);
+        panel.add(map);
         Timer tim = new Timer(16, this);
         tim.start();
         world.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        world.add(map);
+        world.add(panel);
+//        world.add(textField);
         world.setLocationRelativeTo(null);
         world.setVisible(true);
     }
