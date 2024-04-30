@@ -32,10 +32,8 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.JList;
 
-public class Main extends JPanel implements ActionListener, MouseListener, KeyListener {
-    
-    // sprites/object creating
-    
+public class Main extends JPanel implements ActionListener, KeyListener {
+        
     Map background = new Map();
     double maxLong = 180;
     double minLong = -180;
@@ -51,10 +49,10 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
     double xScale = width/(maxLong - minLong);
     double yScale = height/(maxLat - minLat);
     
-    //sets background
     private ImageIcon backgroundImage = new ImageIcon("Map.jpg");
     private static Coordinate inputted;
-    private static String in = "Russian Federation";
+    private static String in;
+    private static HashMap country;
     public static void main(String[] arg) {
         new Main(); 
         readInput();
@@ -66,12 +64,11 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
 			Scanner scanner = new Scanner(new File("Centroids.csv"));
 			
 			if (scanner.hasNextLine()) {
-                scanner.nextLine(); // Skip the first line
-            }
+                scanner.nextLine();             }
 			
-			HashMap country = new HashMap<String, Coordinate>();
+			country = new HashMap<String, Coordinate>();
 			
-			 while (scanner.hasNextLine()) {
+			while (scanner.hasNextLine()) {
 	    			String[] data = scanner.nextLine().split(",");
 	                for(int i = 2; i < data.length; i++) {
 	                	System.out.println(data[i]);
@@ -81,20 +78,13 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
 	                double longitude = Double.parseDouble(data[1]);
 	                String c = data[2];
 	                country.put(c, new Coordinate(latitude, longitude));
-	            }
-//			 while(true) {
-//				Scanner input = new Scanner(System.in);
-//				System.out.println("input country");
-//                in = input.nextLine();
-//                inputted = (Coordinate)(country.get(in));
-//			}
+	        }
 		}
 		catch (Exception e){
 			System.out.println(e);
 		}
     }
     
-    //frame constructor
     public Main() {
         JFrame world = new JFrame("Map");
         JPanel panel = new JPanel();
@@ -111,11 +101,9 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
         button.addActionListener(this);
         button.addKeyListener(this);
 
-        // Make the JFrame visible
         world.setLayout(new BorderLayout());
         world.setSize(new Dimension(width, height));
         world.setResizable(false);
-        world.addMouseListener(this);
         world.addKeyListener(this);
         
         String src = new File("").getAbsolutePath() + "/src/";
@@ -135,7 +123,6 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
         world.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         world.add(panel);
 
-//        world.add(textField);
         world.setLocationRelativeTo(null);
         world.setVisible(true);
     }
@@ -144,77 +131,43 @@ public class Main extends JPanel implements ActionListener, MouseListener, KeyLi
     protected void paintComponent(Graphics g) {
         
     	super.paintComponent(g);
-        // Call the paint method of the Map object to draw the background
         background.paint(g);
         g.setColor(Color.red);
-//        g.drawOval((int)inputted.getLatitude(), (int)inputted.getLongitude(), 10, 10);
-        double[] paraguay = convert(-32.815428, -56.094636);
+        if(in != null) {
+        	Coordinate curr = (Coordinate)country.get(in);
+        	g.drawOval((int)curr.getLatitude(), (int)curr.getLongitude(), 10, 10);
+        	g.drawOval(500, 500, 100, 100);
+        }
     }
     
-    public double[] convert(double lon, double lat){
-        double x = ((lon + 180.0) * (width / 360.0));
-        double y = (((lat * -1.0) + 90.0) * (height / 180.0));
-        
-        
-        double[] res = {x,y};
-        return res;
-    }
-    
-    @Override
-    public void mouseClicked(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent m) {
-
-    }
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == button) {
         	System.out.println(textField.getText());
         	((DefaultListModel) answers.getModel()).addElement(textField.getText());
+        	in = textField.getText();
+
+        	
         }
         
     }
-    
-    @Override
-	    public void keyReleased(KeyEvent e) {
-	        // TODO Auto-generated method stub
-	   
-	    }
-	
-	    @Override
-	    public void keyTyped(KeyEvent arg0) {
-	        // TODO Auto-generated method stub
-	    }
-	
-		@Override
-		public void keyPressed(KeyEvent e) {
-			// TODO Auto-generated method stub
-			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-	    		System.out.println(textField.getText());
-	        	((DefaultListModel) answers.getModel()).addElement(textField.getText());
-	    	}
-		}
-    
 	@Override
-	public void mouseReleased(MouseEvent e) {
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+	    	System.out.println(textField.getText());
+	        ((DefaultListModel) answers.getModel()).addElement(textField.getText());
+	        in = textField.getText();
+	    }
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
