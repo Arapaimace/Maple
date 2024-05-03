@@ -49,12 +49,13 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     double xScale = width/(maxLong - minLong);
     double yScale = height/(maxLat - minLat);
     
+    boolean joever = false;
     private ImageIcon backgroundImage = new ImageIcon("Map.jpg");
     private static Coordinate inputted;
     private static String in;
     private static HashMap country;
     public static void main(String[] arg) {
-        new Main(); 
+        Main m = new Main(); 
         readInput();
     }
 
@@ -127,36 +128,37 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         world.setVisible(true);
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        
+	public void paint(Graphics g) {
+        g.drawOval(300, 300, 100, 100);
     	super.paintComponent(g);
         background.paint(g);
-        g.setColor(Color.red);
-        if(in != null) {
-        	Coordinate curr = (Coordinate)country.get(in);
-        	g.drawOval((int)curr.getLatitude(), (int)curr.getLongitude(), 10, 10);
+        if(joever) {
+        	Coordinate curr = (Coordinate) country.get(in);
+            g.setColor(Color.red);
         	g.drawOval(500, 500, 100, 100);
         }
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == button) {
-        	System.out.println(textField.getText());
+    	if(e.getSource() == button) {
         	((DefaultListModel) answers.getModel()).addElement(textField.getText());
-        	in = textField.getText();
+        	in = (String)textField.getText();
+	        joever = true;
+	        repaint();
 
-        	
+	        
         }
         
     }
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-	    	System.out.println(textField.getText());
 	        ((DefaultListModel) answers.getModel()).addElement(textField.getText());
 	        in = textField.getText();
+	        joever = true;
+			repaint();
+
 	    }
 	}
 
