@@ -7,4 +7,8 @@ public class Coordinate {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
+
+	public String toString(){
+		return "latitude: " + latitude + " longitude: " + longitude;
+	}
 }
