@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.awt.Image;
@@ -34,29 +35,36 @@ import javax.swing.JList;
 
 public class Main extends JPanel implements ActionListener, KeyListener {
         
-    Map background = new Map();
-    double maxLong = 180;
-    double minLong = -180;
-    double maxLat = 85.05112878;
-    double minLat = -85.05112878;
-    int width = 1280;
-    int height = 641;
-    JButton button;
-    JTextField textField;
-    JLabel map;
-    JList<String> answers;
+	private Map background = new Map();
+	private double maxLong = 180;
+	private double minLong = -180;
+	private double maxLat = 85.05112878;
+	private double minLat = -85.05112878;
+	private int width = 1280;
+	private int height = 641;
+	private JButton button;
+	private JTextField textField;
+	private JLabel map;
+	private JList<String> answers;
     
-    double xScale = width/(maxLong - minLong);
-    double yScale = height/(maxLat - minLat);
+    private static ArrayList<String> co;
+    
+    private double xScale = width/(maxLong - minLong);
+    private double yScale = height/(maxLat - minLat);
     
     boolean joever = false;
     private ImageIcon backgroundImage = new ImageIcon("Map.jpg");
     private static Coordinate inputted;
     private static String in;
     private static HashMap country;
+    public static String answer;
     public static void main(String[] arg) {
         Main m = new Main(); 
+
         readInput();
+        
+        answer = randomCountry();
+
     }
 
     public static void readInput(){
@@ -68,6 +76,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
                 scanner.nextLine();             }
 			
 			country = new HashMap<String, Coordinate>();
+			co = new ArrayList<String>();
 			
 			while (scanner.hasNextLine()) {
 	    			String[] data = scanner.nextLine().split(",");
@@ -79,7 +88,9 @@ public class Main extends JPanel implements ActionListener, KeyListener {
 	                double longitude = Double.parseDouble(data[1]);
 	                String c = data[2];
 	                country.put(c, new Coordinate(latitude, longitude));
+	                co.add(c);
 	        }
+
 		}
 		catch (Exception e){
 			System.out.println(e);
@@ -128,39 +139,69 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         world.setVisible(true);
     }
 
-	public void paint(Graphics g) {
-        g.drawOval(300, 300, 100, 100);
-    	super.paintComponent(g);
+    
+    public void paint(Graphics g) {
+        super.paintComponent(g);
+        System.out.println("paint called"); // Add this line for debugging
         background.paint(g);
-        if(joever) {
-        	Coordinate curr = (Coordinate) country.get(in);
+        if (joever) {
+            Coordinate curr = (Coordinate) country.get(in);
+            System.out.println(curr); // Add this line to verify the value of 'curr'
             g.setColor(Color.red);
-        	g.drawOval(500, 500, 100, 100);
+            g.drawOval(500, 500, 100, 100); // Draw your oval here
         }
     }
     
+    public static String randomCountry() {
+    	int index = (int)((Math.random()* co.size()-2)+1);
+    	
+    	return co.get(index);
+    }
+    
+    public int distance(Coordinate c) {
+
+    	Coordinate a = (Coordinate) country.get(answer);
+    	
+    	
+    	
+    	double lat1 = Math.toRadians(c.getLatitude()), lat2 = Math.toRadians(a.getLatitude());  
+    	double lon1 = Math.toRadians(c.getLongitude()), lon2 = Math.toRadians(a.getLongitude());
+
+    	return (int)( Math.acos(lat2)* (Math.sin(lat1)*Math.sin(lat1)+Math.cos(lat2)*Math.cos(lat1)*Math.cos(lon1-lon2))* 6371);
+    	
+
+
+    }
+
+
+    
     @Override
     public void actionPerformed(ActionEvent e) {
-    	if(e.getSource() == button) {
-        	((DefaultListModel) answers.getModel()).addElement(textField.getText());
-        	in = (String)textField.getText();
-	        joever = true;
-	        repaint();
-
-	        
+    	if (e.getSource() == button && (country.get(textField.getText()) != null)) {
+    		String display = "";
+    		double dist = distance((Coordinate)country.get(textField.getText()));
+    		display = textField.getText() + ", distance to answer: " + dist +  " km";
+    		((DefaultListModel) answers.getModel()).addElement(display);
+            in = textField.getText();
+            joever = true;
+            System.out.println(answer);
+            repaint();
         }
-        
     }
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-	        ((DefaultListModel) answers.getModel()).addElement(textField.getText());
-	        in = textField.getText();
-	        joever = true;
-			repaint();
 
-	    }
-	}
+    @Override
+    public void keyPressed(KeyEvent e) {
+    	if (e.getSource() == button && (country.get(textField.getText()) != null)) {
+    		String display = "";
+    		double dist = distance((Coordinate)country.get(textField.getText()));
+    		display = textField.getText() + ", distance to answer: " + dist +  " km";
+    		((DefaultListModel) answers.getModel()).addElement(display);
+            in = textField.getText();
+            joever = true;
+            repaint();
+        }
+    }
+
 
 	@Override
 	public void keyTyped(KeyEvent e) {
