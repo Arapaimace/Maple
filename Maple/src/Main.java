@@ -103,7 +103,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         
         answers = new JList(new DefaultListModel<>());
         JScrollPane scrollPane = new JScrollPane(answers);
-        scrollPane.setBounds(10, 300, 200, 300);
+        scrollPane.setBounds(10, 300, 250, 300);
         
         textField = new JTextField(20);
         textField.setHorizontalAlignment(SwingConstants.CENTER);
@@ -158,19 +158,39 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     	return co.get(index);
     }
     
-    public int distance(Coordinate c) {
+    public double distance(Coordinate c) {
 
     	Coordinate a = (Coordinate) country.get(answer);
-    	
     	
     	
     	double lat1 = Math.toRadians(c.getLatitude()), lat2 = Math.toRadians(a.getLatitude());  
     	double lon1 = Math.toRadians(c.getLongitude()), lon2 = Math.toRadians(a.getLongitude());
 
-    	return (int)( Math.acos(lat2)* (Math.sin(lat1)*Math.sin(lat1)+Math.cos(lat2)*Math.cos(lat1)*Math.cos(lon1-lon2))* 6371);
     	
+    	double dlon = lon2 - lon1; 
+        double dlat = lat2 - lat1;
+        double x = Math.pow(Math.sin(dlat / 2), 2)
+                 + Math.cos(lat1) * Math.cos(lat2)
+                 * Math.pow(Math.sin(dlon / 2),2);
+             
+        double y = 2 * Math.asin(Math.sqrt(x));
+ 
+        // Radius of earth in kilometers. Use 3956 
+        // for miles
+        double r = 3956;
+ 
+        // calculate the result
+        return(round((y * r),2));
 
+    }
+    
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
 
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 
 
@@ -180,7 +200,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     	if (e.getSource() == button && (country.get(textField.getText()) != null)) {
     		String display = "";
     		double dist = distance((Coordinate)country.get(textField.getText()));
-    		display = textField.getText() + ", distance to answer: " + dist +  " km";
+    		display = textField.getText() + ", distance to answer: " + dist +  " mi";
     		((DefaultListModel) answers.getModel()).addElement(display);
             in = textField.getText();
             joever = true;
@@ -194,7 +214,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     	if (e.getSource() == button && (country.get(textField.getText()) != null)) {
     		String display = "";
     		double dist = distance((Coordinate)country.get(textField.getText()));
-    		display = textField.getText() + ", distance to answer: " + dist +  " km";
+    		display = textField.getText() + ", distance to answer: " + dist +  " mi";
     		((DefaultListModel) answers.getModel()).addElement(display);
             in = textField.getText();
             joever = true;
