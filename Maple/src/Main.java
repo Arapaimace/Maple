@@ -99,61 +99,67 @@ public class Main extends JPanel implements ActionListener, KeyListener {
 		}
     }
     
+    class DrawPane extends JPanel {
+        protected void paintComponent(Graphics g) {
+        	super.paintComponent(g);
+        	background.paint(g);
+            g.setColor(Color.red);
+        	g.fillOval(500, 500, 10, 10);
+            if(in != null) {
+            	Coordinate curr = (Coordinate)country.get(in);
+            	g.drawOval((int)curr.getLatitude(), (int)curr.getLongitude(), 10, 10);
+            }
+        }
+   }
     public Main() {
-        JFrame world = new JFrame("Map");
+    	System.out.print(generateRandomCountry());
+//    	System.out.println(generateRandomCountry());
+        JFrame input = new JFrame("Input");
+        JFrame world = new JFrame("World");
+        world.setContentPane(new DrawPane());
+        world.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        world.setSize(new Dimension(width, height));
+        world.setVisible(true); 
+        
         JPanel panel = new JPanel();
         
         answers = new JList(new DefaultListModel<>());
         JScrollPane scrollPane = new JScrollPane(answers);
-        scrollPane.setBounds(10, 300, 250, 300);
+        scrollPane.setBounds(10, 300, 200, 300);
         
         textField = new JTextField(20);
         textField.setHorizontalAlignment(SwingConstants.CENTER);
         textField.setBounds(0, 0, (int) (width), 50);
+        textField.addKeyListener(this);
         
-        button = new JButton("Enter");
-        button.addActionListener(this);
-        button.addKeyListener(this);
+//        button = new JButton("Enter");
+//        button.addActionListener(this);
+//        button.addKeyListener(this);
+//        input.addMouseListener(this);
 
-        world.setLayout(new BorderLayout());
-        world.setSize(new Dimension(width, height));
-        world.setResizable(false);
-        world.addKeyListener(this);
+        input.setLayout(new BorderLayout());
+        input.setResizable(false);
+        input.addKeyListener(this);
         
-        String src = new File("").getAbsolutePath() + "/src/";
-        map = new JLabel("");
-        Image img = new ImageIcon(this.getClass().getResource("Map.jpg")).getImage();
-        map.setIcon(new ImageIcon(img));
+//	    map = new JLabel("");
+//	    Image img = new ImageIcon(this.getClass().getResource("Map.jpg")).getImage();
+//	    map.setIcon(new ImageIcon(img));
         
         setCursor(Toolkit.getDefaultToolkit().createCustomCursor(backgroundImage.getImage(), new Point(0, 0),
                 "custom cursor"));
 
         panel.add(textField);
-        panel.add(button);
-        panel.add(map);
-        world.getContentPane().add(scrollPane);
+//        panel.add(button);
+//      input.getContentPane().add(scrollPane);
         Timer tim = new Timer(16, this);
         tim.start();
-        world.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        world.add(panel);
+        input.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        input.add(panel);
 
-        world.setLocationRelativeTo(null);
-        world.setVisible(true);
+        input.setLocationRelativeTo(null);
+        input.setVisible(true);
+        input.pack();
     }
-
-    
-    public void paint(Graphics g) {
-        super.paintComponent(g);
-        System.out.println("paint called"); // Add this line for debugging
-        background.paint(g);
-        if (joever) {
-            Coordinate curr = (Coordinate) country.get(in);
-            System.out.println(curr); // Add this line to verify the value of 'curr'
-            g.setColor(Color.red);
-            g.drawOval(500, 500, 100, 100); // Draw your oval here
-        }
-    }
-    
     public static String randomCountry() {
     	int index = (int)((Math.random()* co.size()-2)+1);
     	
