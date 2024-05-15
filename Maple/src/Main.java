@@ -117,7 +117,6 @@ public class Main extends JPanel implements ActionListener, KeyListener {
    }
     public Main() {
         JFrame world = new JFrame("World");
-        JSplitPane split = new JSplitPane();
         JPanel main = new JPanel();
         JPanel inputRight = new JPanel();
         JPanel graphics = new DrawPane();
@@ -126,31 +125,28 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         world.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         world.setVisible(true); 
         
-        inputRight.setLayout(new BoxLayout(inputRight, BoxLayout.X_AXIS));
-        inputRight.setPreferredSize(new Dimension(200, height));
+        inputRight.setLayout(new FlowLayout());
+        inputRight.setPreferredSize(new Dimension(100, height));
         
         answers = new JList(new DefaultListModel<>());
         JScrollPane scrollPane = new JScrollPane(answers);
-        scrollPane.setBounds(10, 300, 200, 300);
+        scrollPane.setPreferredSize(new Dimension(100, height-65));
+        inputRight.add(scrollPane);
         
-        JPanel inputPanel = new JPanel();
         textField = new JTextField();
         textField.addKeyListener(this);
+        textField.setPreferredSize(new Dimension(100, 20));
+        inputRight.add(textField);
         
         button = new JButton("Enter");
         button.addActionListener(this);
         button.addKeyListener(this);
+        inputRight.add(button);
 
         world.addKeyListener(this);
         
         setCursor(Toolkit.getDefaultToolkit().createCustomCursor(backgroundImage.getImage(), new Point(0, 0),
                 "custom cursor"));
-
-        inputRight.add(inputPanel);
-        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-        inputPanel.add(button);
-        inputPanel.add(textField);
-        inputPanel.add(scrollPane);
         
         main.add(graphics);
         main.add(inputRight);
