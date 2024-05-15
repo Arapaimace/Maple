@@ -1,10 +1,12 @@
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -22,6 +24,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.awt.Image;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,6 +32,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -112,53 +116,50 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         }
    }
     public Main() {
-    	System.out.print(generateRandomCountry());
-//    	System.out.println(generateRandomCountry());
-        JFrame input = new JFrame("Input");
         JFrame world = new JFrame("World");
-        world.setContentPane(new DrawPane());
+        JSplitPane split = new JSplitPane();
+        JPanel main = new JPanel();
+        JPanel inputRight = new JPanel();
+        JPanel graphics = new DrawPane();
+        graphics.setPreferredSize(new Dimension(width, height));
+        
         world.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        world.setSize(new Dimension(width, height));
         world.setVisible(true); 
         
-        JPanel panel = new JPanel();
+        inputRight.setLayout(new BoxLayout(inputRight, BoxLayout.X_AXIS));
+        inputRight.setPreferredSize(new Dimension(200, height));
         
         answers = new JList(new DefaultListModel<>());
         JScrollPane scrollPane = new JScrollPane(answers);
         scrollPane.setBounds(10, 300, 200, 300);
         
-        textField = new JTextField(20);
-        textField.setHorizontalAlignment(SwingConstants.CENTER);
-        textField.setBounds(0, 0, (int) (width), 50);
+        JPanel inputPanel = new JPanel();
+        textField = new JTextField();
         textField.addKeyListener(this);
         
-//        button = new JButton("Enter");
-//        button.addActionListener(this);
-//        button.addKeyListener(this);
-//        input.addMouseListener(this);
+        button = new JButton("Enter");
+        button.addActionListener(this);
+        button.addKeyListener(this);
 
-        input.setLayout(new BorderLayout());
-        input.setResizable(false);
-        input.addKeyListener(this);
-        
-//	    map = new JLabel("");
-//	    Image img = new ImageIcon(this.getClass().getResource("Map.jpg")).getImage();
-//	    map.setIcon(new ImageIcon(img));
+        world.addKeyListener(this);
         
         setCursor(Toolkit.getDefaultToolkit().createCustomCursor(backgroundImage.getImage(), new Point(0, 0),
                 "custom cursor"));
 
-        panel.add(textField);
-//        panel.add(button);
-//      input.getContentPane().add(scrollPane);
+        inputRight.add(inputPanel);
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+        inputPanel.add(button);
+        inputPanel.add(textField);
+        inputPanel.add(scrollPane);
+        
+        main.add(graphics);
+        main.add(inputRight);
+        
+        world.setContentPane(main);
+        world.pack();
+        
         Timer tim = new Timer(16, this);
         tim.start();
-        input.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        input.add(panel);
-
-        input.setLocationRelativeTo(null);
-        input.setVisible(true);
-        input.pack();
     }
     public static String randomCountry() {
     	int index = (int)((Math.random()* co.size()-2)+1);
@@ -208,7 +209,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     		String display = "";
     		double dist = distance((Coordinate)country.get(textField.getText()));
     		display = textField.getText() + ", distance to answer: " + dist +  " mi";
-    		((DefaultListModel) answers.getModel()).addElement(display);
+    		((DefaultListModel) answers.getModel()).addElement(textField.getText());
             in = textField.getText();
             joever = true;
             System.out.println(answer);
@@ -218,11 +219,12 @@ public class Main extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-    	if (e.getSource() == button && (country.get(textField.getText()) != null)) {
+    	if (e.getKeyCode() == KeyEvent.VK_ENTER && (country.get(textField.getText()) != null)) {
+    		System.out.print(textField.getText());
+    		((DefaultListModel) answers.getModel()).addElement(textField.getText());
     		String display = "";
     		double dist = distance((Coordinate)country.get(textField.getText()));
     		display = textField.getText() + ", distance to answer: " + dist +  " mi";
-    		((DefaultListModel) answers.getModel()).addElement(display);
             in = textField.getText();
             joever = true;
             repaint();
