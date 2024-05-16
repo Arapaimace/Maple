@@ -108,7 +108,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
 	                int xPos = Integer.parseInt(data[1]);
 	                int yPos = Integer.parseInt(data[2]);
 	                String c = data[0];
-	                pixelCoords.put(c, new Pixel(xPos, yPos));
+	                pixelCoords.put(c, new Pixel(xPos, yPos - 20));
 			}
 		}
 		catch (Exception e){
@@ -121,7 +121,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         JPanel main = new JPanel();
         JPanel inputRight = new JPanel();
         JPanel graphics = new DrawPane();
-        graphics.setPreferredSize(new Dimension(width, height));
+        graphics.setPreferredSize(new Dimension(width-20, height));
         
         world.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -130,7 +130,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         
         answers = new JList(new DefaultListModel<>());
         JScrollPane scrollPane = new JScrollPane(answers);
-        scrollPane.setPreferredSize(new Dimension(100, height-62));
+        scrollPane.setPreferredSize(new Dimension(100, height-185));
         inputRight.add(scrollPane);
         
         textField = new JTextField("Input State");
