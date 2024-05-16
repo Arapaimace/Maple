@@ -56,7 +56,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     private double yScale = height/(maxLat - minLat);
     
     boolean joever = false;
-    private ImageIcon backgroundImage = new ImageIcon("Map.jpg");
+    private ImageIcon backgroundImage = new ImageIcon("EquiMap.png");
     private static Coordinate inputted;
     private static String in;
     private static HashMap country;
@@ -94,14 +94,17 @@ public class Main extends JPanel implements ActionListener, KeyListener {
 	                country.put(c, new Coordinate(latitude, longitude));
 	                co.add(c);
 	        }
-			Scanner scanner2 = new Scanner(new File("Final_Coordinates - Sheet1.csv"));
+			scanner.close();
 			
-			if (scanner.hasNextLine()) {
-                scanner.nextLine();             
+			Scanner scanner2 = new Scanner(new File("Final_Coordinates - Sheet1.csv"));
+
+			if (scanner2.hasNextLine()) {
+                scanner2.nextLine();             
             }
+
 			pixelCoords = new HashMap<String, Coordinate>();			
-			while (scanner.hasNextLine()) {
-	    			String[] data = scanner.nextLine().split(",");
+			while (scanner2.hasNextLine()) {
+	    			String[] data = scanner2.nextLine().split(",");
 	                int xPos = Integer.parseInt(data[1]);
 	                int yPos = Integer.parseInt(data[2]);
 	                String c = data[0];
@@ -165,8 +168,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
             g.setColor(Color.red);
             if(in != null) {
             	Pixel curr = (Pixel)pixelCoords.get(in);
-            	System.out.print(curr.getxCoordinate());
-            	g.fillOval(curr.getxCoordinate(), curr.getyCoordinate(), 10, 10);
+            	g.fillOval(curr.getxCoordinate(), curr.getyCoordinate(), 5, 5);
             }
         }
    }
