@@ -6,15 +6,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileReader;
 import java.math.BigDecimal;
@@ -24,7 +21,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.awt.Image;
 
-import javax.swing.BoxLayout;
+import javax.swing.AbstractButton;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -46,8 +43,8 @@ public class Main extends JPanel implements ActionListener, KeyListener {
 	private double minLong = -180;
 	private double maxLat = 85.05112878;
 	private double minLat = -85.05112878;
-	private int width = 1280;
-	private int height = 641;
+	private int width = 1175;
+	private int height = 690;
 	private JButton button;
 	private JTextField textField;
 	private JLabel map;
@@ -63,7 +60,9 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     private static Coordinate inputted;
     private static String in;
     private static HashMap country;
+    private static HashMap pixelCoords;
     public static String answer;
+    
     public static void main(String[] arg) {
         Main m = new Main(); 
 
@@ -72,7 +71,6 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         answer = randomCountry();
 
     }
-
     public static void readInput(){
         try {
         	
@@ -96,25 +94,25 @@ public class Main extends JPanel implements ActionListener, KeyListener {
 	                country.put(c, new Coordinate(latitude, longitude));
 	                co.add(c);
 	        }
-
+			Scanner scanner2 = new Scanner(new File("Final_Coordinates - Sheet1.csv"));
+			
+			if (scanner.hasNextLine()) {
+                scanner.nextLine();             
+            }
+			pixelCoords = new HashMap<String, Coordinate>();			
+			while (scanner.hasNextLine()) {
+	    			String[] data = scanner.nextLine().split(",");
+	                int xPos = Integer.parseInt(data[1]);
+	                int yPos = Integer.parseInt(data[2]);
+	                String c = data[0];
+	                pixelCoords.put(c, new Pixel(xPos, yPos));
+			}
 		}
 		catch (Exception e){
 			System.out.println(e);
 		}
     }
     
-    class DrawPane extends JPanel {
-        protected void paintComponent(Graphics g) {
-        	super.paintComponent(g);
-        	background.paint(g);
-            g.setColor(Color.red);
-        	g.fillOval(500, 500, 10, 10);
-            if(in != null) {
-            	Coordinate curr = (Coordinate)country.get(in);
-            	g.drawOval((int)curr.getLatitude(), (int)curr.getLongitude(), 10, 10);
-            }
-        }
-   }
     public Main() {
         JFrame world = new JFrame("World");
         JPanel main = new JPanel();
@@ -123,17 +121,17 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         graphics.setPreferredSize(new Dimension(width, height));
         
         world.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        world.setVisible(true); 
         
         inputRight.setLayout(new FlowLayout());
         inputRight.setPreferredSize(new Dimension(100, height));
         
         answers = new JList(new DefaultListModel<>());
         JScrollPane scrollPane = new JScrollPane(answers);
-        scrollPane.setPreferredSize(new Dimension(100, height-65));
+        scrollPane.setPreferredSize(new Dimension(100, height-62));
         inputRight.add(scrollPane);
         
-        textField = new JTextField();
+        textField = new JTextField("Input State");
+        textField.setHorizontalAlignment(SwingConstants.CENTER);
         textField.addKeyListener(this);
         textField.setPreferredSize(new Dimension(100, 20));
         inputRight.add(textField);
@@ -153,10 +151,26 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         
         world.setContentPane(main);
         world.pack();
+     // Call this *before* 'setVisible(true)'.
+        world.setVisible(true); 
         
         Timer tim = new Timer(16, this);
         tim.start();
     }
+    
+    class DrawPane extends JPanel {
+        protected void paintComponent(Graphics g) {
+        	super.paintComponent(g);
+        	background.paint(g);
+            g.setColor(Color.red);
+            if(in != null) {
+            	Pixel curr = (Pixel)pixelCoords.get(in);
+            	System.out.print(curr.getxCoordinate());
+            	g.fillOval(curr.getxCoordinate(), curr.getyCoordinate(), 10, 10);
+            }
+        }
+   }
+    
     public static String randomCountry() {
     	int index = (int)((Math.random()* co.size()-2)+1);
     	
@@ -216,12 +230,12 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
     	if (e.getKeyCode() == KeyEvent.VK_ENTER && (country.get(textField.getText()) != null)) {
-    		System.out.print(textField.getText());
     		((DefaultListModel) answers.getModel()).addElement(textField.getText());
     		String display = "";
     		double dist = distance((Coordinate)country.get(textField.getText()));
     		display = textField.getText() + ", distance to answer: " + dist +  " mi";
             in = textField.getText();
+    		System.out.print(in);
             joever = true;
             repaint();
         }
