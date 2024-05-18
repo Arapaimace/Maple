@@ -15,10 +15,10 @@ public class Map {
 	//necessary code to paint the background for the game
 	private Image background;
 	private int x, y;
-	public Map() {
-	    background = getImage("Map.jpg");
-		x = 0;
-		y = 0;
+	public Map() { 
+	    background = getImage("EquiMap.png");
+		x = -50;
+		y = -50;
 	}
 	private Image getImage(String path) {
 		Image tempImage = null;
@@ -34,6 +34,7 @@ public class Map {
 	    Graphics2D g2 = (Graphics2D) g;
 	    g2.drawImage(background, x, y, null);
 	}
+	
 
 
 
