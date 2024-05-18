@@ -1,5 +1,3 @@
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -19,9 +17,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.awt.Image;
 
-import javax.swing.AbstractButton;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,8 +25,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
@@ -49,11 +43,9 @@ public class Main extends JPanel implements ActionListener, KeyListener {
 	private JTextField textField;
 	private JLabel map;
 	private JList<String> answers;
-    
+	private ArrayList<String> sameInput = new ArrayList<String>();
+    private double dist;
     private static ArrayList<String> co;
-    
-    private double xScale = width/(maxLong - minLong);
-    private double yScale = height/(maxLat - minLat);
     
     boolean joever = false;
     private ImageIcon backgroundImage = new ImageIcon("EquiMap.png");
@@ -165,7 +157,25 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         protected void paintComponent(Graphics g) {
         	super.paintComponent(g);
         	background.paint(g);
-            g.setColor(Color.red);
+            //color selection
+        	if(dist == 0) {
+        		g.setColor(Color.GREEN);
+        	}
+        	else if(dist < 500)  {
+        		g.setColor(Color.RED);
+        	}
+        	else if(dist < 1000) {
+        		g.setColor(Color.ORANGE);
+        	}
+        	else if(dist < 5000) {
+        		g.setColor(Color.yellow);
+        	}
+        	else if(dist < 10000) {
+        		g.setColor(Color.PINK);
+        	}
+        	else {
+        		g.setColor(Color.WHITE);
+        	}
             if(in != null) {
             	Pixel curr = (Pixel)pixelCoords.get(in);
             	g.fillOval(curr.getxCoordinate(), curr.getyCoordinate(), 5, 5);
@@ -212,35 +222,37 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
-
-
     
     @Override
     public void actionPerformed(ActionEvent e) {
-    	if (e.getSource() == button && (country.get(textField.getText()) != null)) {
-    		String display = "";
+    	if (e.getSource() == button && (country.get(textField.getText()) != null) && sameInput.indexOf(textField.getText()) == -1) {
     		double dist = distance((Coordinate)country.get(textField.getText()));
-    		display = textField.getText() + ", distance to answer: " + dist +  " mi";
+    		String display = textField.getText() + ", distance to answer: " + dist +  " mi";
     		((DefaultListModel) answers.getModel()).addElement(textField.getText());
             in = textField.getText();
-            joever = true;
             System.out.println(answer);
+            sameInput.add(textField.getText());
             repaint();
         }
+    	else if(e.getSource() == button && (country.get(textField.getText()) != null) && sameInput.indexOf(textField.getText()) != -1) {
+    		System.out.println("Country has already been guessed!");
+    	}
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-    	if (e.getKeyCode() == KeyEvent.VK_ENTER && (country.get(textField.getText()) != null)) {
+    	if (e.getKeyCode() == KeyEvent.VK_ENTER && (country.get(textField.getText()) != null) && sameInput.indexOf(textField.getText()) == -1) {
     		((DefaultListModel) answers.getModel()).addElement(textField.getText());
-    		String display = "";
-    		double dist = distance((Coordinate)country.get(textField.getText()));
-    		display = textField.getText() + ", distance to answer: " + dist +  " mi";
+    		dist = distance((Coordinate)country.get(textField.getText()));
+    		String display = textField.getText() + ", distance to answer: " + dist +  " mi";
             in = textField.getText();
-    		System.out.print(in);
-            joever = true;
+            System.out.println(display);
+            sameInput.add(textField.getText());
             repaint();
         }
+    	else if(e.getKeyCode() == KeyEvent.VK_ENTER && (country.get(textField.getText()) != null) && sameInput.indexOf(textField.getText()) != -1) {
+    		System.out.println("Country has already been guessed!");
+    	}
     }
 
 
