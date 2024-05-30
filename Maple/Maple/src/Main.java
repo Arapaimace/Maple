@@ -67,7 +67,6 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     public static void main(String[] arg) {
         Main m = new Main();
         readInput();
-
         answer = randomCountry();
         System.out.println(answer);
     }
@@ -87,7 +86,6 @@ public class Main extends JPanel implements ActionListener, KeyListener {
             while (scanner.hasNextLine()) {
                 String[] data = scanner.nextLine().split(",");
                 for (int i = 2; i < data.length; i++) {
-                    System.out.println(data[i]);
                     i += 2;
                 }
                 double latitude = Double.parseDouble(data[0]);
@@ -114,25 +112,26 @@ public class Main extends JPanel implements ActionListener, KeyListener {
             System.out.println(e);
         }
     }
-
+    JFrame world = new JFrame("World");
+    JPanel legend = new DrawLegend();
+    JPanel main = new JPanel();
+    JPanel inputRight = new JPanel();
+    JPanel graphics = new DrawPane();
+    JPanel inputBL = new JPanel();
+    
     public Main() {
-        JFrame world = new JFrame("World");
-        JPanel legend = new DrawLegend();
-        JPanel main = new JPanel();
-        JPanel inputRight = new JPanel();
-        JPanel graphics = new DrawPane();
-        JPanel inputBL = new JPanel();
+
         world.setPreferredSize(new Dimension(1920, 1080));
-        graphics.setPreferredSize(new Dimension(width - 20, height));
+        graphics.setPreferredSize(new Dimension(width - 20, height+400));
         legend.setPreferredSize(new Dimension(1920, 500));
         legend.setBounds(0, 0, 10000, 10000);
-        ;
         world.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         inputRight.setLayout(new FlowLayout());
         inputRight.setPreferredSize(new Dimension(350, height));
         inputBL.setLayout(new FlowLayout());
         inputBL.setPreferredSize(new Dimension(350, 500));
+        
         answers = new JList(new DefaultListModel<>());
         JScrollPane scrollPane = new JScrollPane(answers);
         scrollPane.setPreferredSize(new Dimension(350, height - 185));
@@ -173,14 +172,15 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         world.setVisible(true);
 
     }
-
+    
+   
     class DrawLegend extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            g.setColor(new Color(14474460));
-            g.fillRect(0, 0, 10000, 10000);
+            g.setColor(new Color(11393254));
+            g.fillRect(0, 0, 400, 400);
             Font font = new Font("Kita", Font.BOLD, 25);
             g.setFont(font);
             g.setColor(Color.BLACK);
@@ -232,7 +232,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
             if (in != null) {
                 Pixel curr = (Pixel) pixelCoords.get(in);
 
-                g.fillOval(curr.getxCoordinate() - 10, curr.getyCoordinate() - 10, 10, 10);
+                g.fillOval(curr.getxCoordinate() - 5, curr.getyCoordinate()-3, 10, 10);
 
                 g.setColor(Color.black);
 
@@ -241,7 +241,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
                     won.paint(g);
                     Font winf = new Font("Comic Sans", Font.BOLD, 30);
                     g.setFont(winf);
-                    g.drawString("The answer was " + answer + "! Press Space to reset your score.", 50, 100);
+                    g.drawString("The answer was " + answer + "! Press Delete to reset your score.", 50, 100);
                     win = false;
 
                 }
@@ -300,63 +300,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == button && (country.get(textField.getText()) != null)
-                && sameInput.indexOf(textField.getText() + ", distance to answer: "
-                        + distance((Coordinate) country.get(textField.getText())) + " mi") == -1) {
-            swi = true;
-            double dist = distance((Coordinate) country.get(textField.getText()));
-            distances.add(dist);
-            if (dist == 0) {
-                color = 0;
-            } else if (dist < 500) {
-                color = 1;
-                score -= 2000;
-            } else if (dist < 1000) {
-                color = 2;
-                score -= 2000;
-            } else if (dist < 5000) {
-                color = 3;
-                score -= 2000;
-            } else if (dist < 10000) {
-                color = 4;
-                score -= 2000;
-            } else {
-                color = 5;
-                score -= 2000;
-            }
-            String display = textField.getText() + ", distance to answer: " + dist + " mi";
-            entered.add(display);
-            in = textField.getText();
-            System.out.println(display);
-            sameInput.add(display);
-            bubbleSort(distances, entered, distances.size());
-            answers.setModel(new DefaultListModel());
-            for (int i = 0; i < entered.size(); i++) {
-                ((DefaultListModel) answers.getModel()).addElement(entered.get(i));
-            }
-        } 
-        else if (e.getSource() == button && (country.get(textField.getText()) != null)
-                && sameInput.indexOf(textField.getText()) != -1) {
-            System.out.println("Country has already been guessed!");
-        }
-        // Reset the game when space key is pressed
-        else if (e.getActionCommand().equals("Space")) {
-            // Clear the lists of entered countries and distances
-            entered.clear();
-            distances.clear();
-
-            // Clear the JTextField and set the answer to a new random country
-            textField.setText("");
-            answer = randomCountry();
-            System.out.println(answer);
-
-            // Clear the JList
-            answers.setModel(new DefaultListModel());
-
-            // Reset the in variable to null and reset the score
-            in = null;
-            score = 100000;
-        }
+    	graphics.repaint();
     }
 
     @Override
@@ -389,24 +333,17 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     		((DefaultListModel) answers.getModel()).addElement(display);
     		entered.add(textField.getText());
             in = textField.getText();
-            System.out.println(display);
             sameInput.add(display);
             
         }
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            answers.setModel(new DefaultListModel());
-            in = null;
-            score = 100000;
-            answer = randomCountry();
-            System.out.println(answer);
-
+        if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+        	answers.setModel(new DefaultListModel());
+        	in = null;
+        	score = 100000;
+        	answer = randomCountry();
+        	System.out.println(answer);
         }
-        if(win) {
-        	if (e.getKeyCode() == KeyEvent.VK_ENTER && (country.get(textField.getText()) != null)
-                && sameInput.indexOf(textField.getText()) != -1) {
-        		System.out.println("Country has already been guessed or is invalid!");
-        	}
-        }
+        
     }
 
     @Override
