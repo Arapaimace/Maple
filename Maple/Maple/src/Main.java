@@ -65,6 +65,12 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     private static int color;
 
     public static void main(String[] arg) {
+        songs.add("F.I.L.O..wav");
+    	songs.add("Nujabes - Luv(sic) Part 2 feat.Shing02 [Official Audio].wav");
+    	songs.add("Nujabes - Luv(sic) Part 3 feat.Shing02 [Official Audio].wav");
+    	songs.add("Nujabes - Luv(sic) Part 4 feat.Shing02 [Official Audio].wav");
+    	SimpleAudioPlayer shing = new SimpleAudioPlayer(songs);
+    	shing.play();
         Main m = new Main();
         readInput();
         answer = randomCountry();
