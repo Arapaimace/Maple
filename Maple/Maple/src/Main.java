@@ -34,19 +34,22 @@ import javax.swing.Timer;
 import javax.swing.JList;
 
 public class Main extends JPanel implements ActionListener, KeyListener {
-    private static boolean swi = false;
+    
+	private JTextField textField;
+    private JList<String> answers;
+    private JFrame world = new JFrame("World");
+    private JPanel legend = new DrawLegend();
+    private JPanel main = new JPanel();
+    private JPanel inputRight = new JPanel();
+    private JPanel graphics = new DrawPane();
+    private JPanel inputBL = new JPanel();
+	
+	private static boolean swi = false;
     private Map background = new Map();
     private Win won = new Win();
-    private double maxLong = 180;
-    private double minLong = -180;
-    private double maxLat = 85.05112878;
-    private double minLat = -85.05112878;
     private int width = 1175;
     private int height = 690;
-    private JButton button;
-    private JTextField textField;
-    private JLabel map;
-    private JList<String> answers;
+    
     private static ArrayList<String> entered = new ArrayList<String>();
     private static ArrayList<Double> distances = new ArrayList<Double>();
     private ArrayList<String> sameInput = new ArrayList<String>();
@@ -63,14 +66,11 @@ public class Main extends JPanel implements ActionListener, KeyListener {
     private static HashMap pixelCoords;
     public static String answer;
     private static int color;
+    
+	SimpleAudioPlayer shing = new SimpleAudioPlayer("shinger.wav", true);
+
 
     public static void main(String[] arg) {
-        songs.add("F.I.L.O..wav");
-    	songs.add("Nujabes - Luv(sic) Part 2 feat.Shing02 [Official Audio].wav");
-    	songs.add("Nujabes - Luv(sic) Part 3 feat.Shing02 [Official Audio].wav");
-    	songs.add("Nujabes - Luv(sic) Part 4 feat.Shing02 [Official Audio].wav");
-    	SimpleAudioPlayer shing = new SimpleAudioPlayer(songs);
-    	shing.play();
         Main m = new Main();
         readInput();
         answer = randomCountry();
@@ -118,17 +118,12 @@ public class Main extends JPanel implements ActionListener, KeyListener {
             System.out.println(e);
         }
     }
-    JFrame world = new JFrame("World");
-    JPanel legend = new DrawLegend();
-    JPanel main = new JPanel();
-    JPanel inputRight = new JPanel();
-    JPanel graphics = new DrawPane();
-    JPanel inputBL = new JPanel();
+    
     
     public Main() {
 
         world.setPreferredSize(new Dimension(1920, 1080));
-        graphics.setPreferredSize(new Dimension(width - 20, height+400));
+        graphics.setPreferredSize(new Dimension(width - 20, height));
         legend.setPreferredSize(new Dimension(1920, 500));
         legend.setBounds(0, 0, 10000, 10000);
         world.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -149,9 +144,6 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         textField.setPreferredSize(new Dimension(100, 20));
         inputRight.add(textField);
 
-        button = new JButton("Submit");
-        button.addActionListener(this);
-        button.addKeyListener(this);
         world.addKeyListener(this);
 
         JTextPane textArea = new JTextPane();
@@ -184,6 +176,7 @@ public class Main extends JPanel implements ActionListener, KeyListener {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
+        	shing.play();
 
             g.setColor(new Color(11393254));
             g.fillRect(0, 0, 400, 400);
